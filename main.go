@@ -41,13 +41,13 @@ var commands = []*Command{
 }
 
 func main() {
-	flag.Usage = usageExit
+	flag.Usage = UsageExit
 	flag.Parse()
 	log.SetFlags(0)
 	log.SetPrefix("awssh: ")
 	args := flag.Args()
 	if len(args) < 1 {
-		usageExit()
+		UsageExit()
 	}
 
 	if args[0] == "help" {
@@ -123,7 +123,13 @@ Usage: awssh {{.Usage}}
 {{.Short | trim}}
 `
 
-func usageExit() {
+func UsageExit() {
 	printUsage(os.Stderr)
+	os.Exit(2)
+}
+
+func (c *Command) UsageExit() {
+	fmt.Fprintf(os.Stderr, "Usage: awssh %s\n\n", c.Usage)
+	fmt.Fprintf(os.Stderr, "Run 'awssh help %s' for help.\n", c.Name())
 	os.Exit(2)
 }

@@ -1,8 +1,6 @@
 package main
 
 import (
-	"json/encoding"
-  "fmt"
 	"os"
 )
 

@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"io"
+	"fmt"
 	"io/ioutil"
 	"os"
-  "path"
+	"path"
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -20,13 +20,11 @@ var cmdSync = &Command{
 }
 
 func runSync(cmd *Command, args []string) {
-  createStorageIfNotExists()
+	createStorageIfNotExists()
 
 	svc := ec2.New(session.New(), &aws.Config{})
 	validateRegion(svc)
 	validateCredentials(svc)
-
-	fmt.Println(*svc.Config.Region)
 
 	resp, err := svc.DescribeInstances(nil)
 	fail(err)
@@ -57,7 +55,7 @@ func runSync(cmd *Command, args []string) {
 func validateRegion(svc *ec2.EC2) {
 	if len(*svc.Config.Region) == 0 {
 		fmt.Println("[error] AWS_REGION not set")
-		showHelpAndExit()
+		os.Exit(2)
 	}
 }
 
@@ -67,11 +65,11 @@ func validateCredentials(svc *ec2.EC2) {
 
 	if len(credentials.AccessKeyID) == 0 {
 		fmt.Println("[error] AWS_ACCESS_KEY_ID not set")
-		showHelpAndExit()
+		os.Exit(2)
 	}
 	if len(credentials.SecretAccessKey) == 0 {
 		fmt.Println("[error] AWS_SECRET_ACCESS_KEY not set")
-		showHelpAndExit()
+		os.Exit(2)
 	}
 }
 
@@ -113,5 +111,3 @@ func (machine *Machine) Save() {
 	}
 	fmt.Println("Could not save: ", machine.Name)
 }
-
-`
