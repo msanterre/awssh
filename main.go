@@ -1,149 +1,129 @@
 package main
 
 import (
-  "fmt"
-  "os"
-  "strings"
-  "path"
-  "io/ioutil"
-  "encoding/json"
-
-  "github.com/aws/aws-sdk-go/aws"
-  "github.com/aws/aws-sdk-go/aws/session"
-  "github.com/aws/aws-sdk-go/service/ec2"
+	"flag"
+	"fmt"
+	"io"
+	"log"
+	"os"
+	"strings"
+	"text/template"
 )
 
-const (
-  DefaultUser = "ubuntu"
-  StorageDest = "$HOME/.awssh/machines"
-)
-
-func fileExists(path string) (bool, error) {
-    _, err := os.Stat(path)
-    if err == nil { return true, nil }
-    if os.IsNotExist(err) { return false, nil }
-    return true, err
+func (c *Command) Name() string {
+	name := c.Usage
+	i := strings.Index(name, " ")
+	if i >= 0 {
+		name = name[:i]
+	}
+	return name
 }
 
-func fail(err error) {
-  if err != nil {
-    panic(err)
-  }
+type Command struct {
+	// Run runs the command.
+	// The args are the arguments after the command name.
+	Run func(cmd *Command, args []string)
+
+	// Usage is the one-line usage message.
+	// The first word in the line is taken to be the command name.
+	Usage string
+
+	// Short is the short description shown in the 'awssh help' output.
+	Short string
+
+	// Flag is a set of flags specific to this command.
+	Flag flag.FlagSet
 }
 
-func showHelpAndExit() {
-  fmt.Println("Lol cya")
-  os.Exit(1)
-}
-
-func validateRegion(svc *ec2.EC2) {
-  if len(*svc.Config.Region) == 0 {
-    fmt.Println("[error] AWS_REGION not set")
-    showHelpAndExit()
-  }
-}
-
-func validateCredentials(svc *ec2.EC2) {
-  credentials, err := (svc.Config.Credentials.Get())
-  fail(err)
-
-  if len(credentials.AccessKeyID) == 0 {
-    fmt.Println("[error] AWS_ACCESS_KEY_ID not set")
-    showHelpAndExit()
-  }
-  if len(credentials.SecretAccessKey) == 0 {
-    fmt.Println("[error] AWS_SECRET_ACCESS_KEY not set")
-    showHelpAndExit()
-  }
-}
-
-func formatName(name string) string {
-  lowercased := strings.ToLower(name)
-  return strings.Replace(lowercased, " ", "-", -1)
-}
-
-func instanceAddress(instance *ec2.Instance) string {
-  address := *instance.PublicDnsName
-  if len(address) == 0 {
-    address = *instance.PublicIpAddress
-  }
-  return address
-}
-
-func instanceName(instance *ec2.Instance) string {
-  for _, value := range instance.Tags {
-    if *value.Key == "Name" {
-      return formatName(*value.Value)
-    }
-  }
-  return "n/a"
-}
-
-func instanceUser(instance *ec2.Instance) string {
-  return DefaultUser
-}
-
-type Machine struct {
-  Name string `json:"name"`
-  User string `json:"user"`
-  Address string `json:"host"`
-}
-
-func (machine *Machine) Save() {
-  fmt.Println("Saving: ", machine.Name)
-  filePath := path.Join(os.ExpandEnv(StorageDest), machine.Name)
-  machineJson, err := json.Marshal(machine)
-  if err == nil {
-    err = ioutil.WriteFile(filePath, machineJson, 0777)
-    if err == nil {
-      return
-    }
-  }
-  fmt.Println("Could not save: ", machine.Name)
-}
-
-func createStorageIfNotExists() {
-  expandedDest := os.ExpandEnv(StorageDest)
-  storageExists, err := fileExists(expandedDest)
-  fail(err)
-
-  if !storageExists {
-    err = os.MkdirAll(expandedDest, 0777)
-    fail(err)
-  }
+var commands = []*Command{
+	cmdSync,
+	cmdList,
 }
 
 func main() {
-  createStorageIfNotExists()
-  svc := ec2.New(session.New(), &aws.Config{})
-  validateRegion(svc)
-  validateCredentials(svc)
+	flag.Usage = usageExit
+	flag.Parse()
+	log.SetFlags(0)
+	log.SetPrefix("awssh: ")
+	args := flag.Args()
+	if len(args) < 1 {
+		usageExit()
+	}
 
-  fmt.Println(*svc.Config.Region)
+	if args[0] == "help" {
+		help(args[1:])
+		return
+	}
 
-  resp, err := svc.DescribeInstances(nil)
-  fail(err)
+	for _, cmd := range commands {
+		if cmd.Name() == args[0] {
+			cmd.Flag.Usage = func() { cmd.UsageExit() }
+			cmd.Flag.Parse(args[1:])
+			cmd.Run(cmd, cmd.Flag.Args())
+			return
+		}
+	}
 
-  var machine *Machine
+	fmt.Fprintf(os.Stderr, "awssh: unknown command %q\n", args[0])
+	fmt.Fprintf(os.Stderr, "Run 'awssh help' for usage.\n")
+	os.Exit(2)
+}
 
-  for _, reservation := range resp.Reservations {
-    for _, instance := range reservation.Instances {
+func help(args []string) {
+	if len(args) == 0 {
+		printUsage(os.Stdout)
+		return
+	}
+	if len(args) != 1 {
+		fmt.Fprintf(os.Stderr, "usage: awssh help command\n\n")
+		fmt.Fprintf(os.Stderr, "Too many arguments given.\n")
+		os.Exit(2)
+	}
+	for _, cmd := range commands {
+		if cmd.Name() == args[0] {
+			tmpl(os.Stdout, helpTemplate, cmd)
+			return
+		}
+	}
+}
 
-      // The AWS sdk will fail if the instance isn't running
-      if *instance.State.Name == "running" {
-        address := instanceAddress(instance)
-        name := instanceName(instance)
-        user := instanceUser(instance)
+func printUsage(w io.Writer) {
+	tmpl(w, usageTemplate, commands)
+}
 
-        fmt.Println(address, name, user)
-        machine = &Machine{
-          Address: address,
-          Name: name,
-          User: user,
-        }
-        machine.Save()
-      }
-    }
-  }
+// tmpl executes the given template text on data, writing the result to w.
+func tmpl(w io.Writer, text string, data interface{}) {
+	t := template.New("top")
+	t.Funcs(template.FuncMap{
+		"trim": strings.TrimSpace,
+	})
+	template.Must(t.Parse(strings.TrimSpace(text) + "\n\n"))
+	if err := t.Execute(w, data); err != nil {
+		panic(err)
+	}
+}
 
+var usageTemplate = `
+Awssh for managing your ec2 host connections
+
+Usage:
+
+	awssh command [arguments]
+
+The commands are:
+{{range .}}
+    {{.Name | printf "%-8s"}} {{.Short}}{{end}}
+
+Use "awssh help [command]" for more information about a command.
+`
+
+var helpTemplate = `
+Usage: awssh {{.Usage}}
+
+{{.Short | trim}}
+`
+
+func usageExit() {
+	printUsage(os.Stderr)
+	os.Exit(2)
 }
