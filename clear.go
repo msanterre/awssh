@@ -1,10 +1,10 @@
 package main
 
 import (
-  "os"
-  "strings"
-  "bufio"
-  "fmt"
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
 )
 
 var cmdClear = &Command{
@@ -13,20 +13,19 @@ var cmdClear = &Command{
 	Run:   runClear,
 }
 
-
 func runClear(cmd *Command, args []string) {
 	createStorageIfNotExists()
 
-  reader := bufio.NewReader(os.Stdin)
+	reader := bufio.NewReader(os.Stdin)
 
-  fmt.Print("Are you sure you want to clear all instances? (y/n):")
+	fmt.Print("Are you sure you want to clear all instances? (y/n):")
 
-  confirm, _ := reader.ReadString('\n')
+	confirm, _ := reader.ReadString('\n')
 
-  if strings.ToLower(strings.TrimSpace(confirm)) == "y" {
-    machinesDir := os.ExpandEnv(StorageDest)
-    os.RemoveAll(machinesDir)
-    fmt.Println("Instances cleared!")
-  }
+	if strings.ToLower(strings.TrimSpace(confirm)) == "y" {
+		machinesDir := os.ExpandEnv(StorageDest)
+		os.RemoveAll(machinesDir)
+		fmt.Println("Instances cleared!")
+	}
 
 }

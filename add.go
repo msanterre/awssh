@@ -1,10 +1,10 @@
 package main
 
 import (
-  "os"
-  "fmt"
-  "bufio"
-  "strings"
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
 )
 
 var cmdAdd = &Command{
@@ -16,22 +16,22 @@ var cmdAdd = &Command{
 func runAdd(cmd *Command, args []string) {
 	createStorageIfNotExists()
 
-  reader := bufio.NewReader(os.Stdin)
+	reader := bufio.NewReader(os.Stdin)
 
-  fmt.Println("Adding a new instance:\n")
+	fmt.Println("Adding a new instance:\n")
 
-  fmt.Print("Name: ")
-  name, _ := reader.ReadString('\n')
-  fmt.Print("Address: ")
-  address, _ := reader.ReadString('\n')
-  fmt.Print("User: ")
-  user, _ := reader.ReadString('\n')
+	fmt.Print("Name: ")
+	name, _ := reader.ReadString('\n')
+	fmt.Print("Address: ")
+	address, _ := reader.ReadString('\n')
+	fmt.Print("User: ")
+	user, _ := reader.ReadString('\n')
 
-  machine := &Machine{
-    Address: strings.TrimSpace(address),
-    Name:    strings.TrimSpace(name),
-    User:    strings.TrimSpace(user),
-  }
+	machine := &Machine{
+		Address: strings.TrimSpace(address),
+		Name:    strings.TrimSpace(name),
+		User:    strings.TrimSpace(user),
+	}
 
-  machine.Save()
+	machine.Save()
 }

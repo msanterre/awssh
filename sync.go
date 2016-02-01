@@ -22,7 +22,7 @@ var cmdSync = &Command{
 func runSync(cmd *Command, args []string) {
 	createStorageIfNotExists()
 
-  fmt.Println("Syncing ...")
+	fmt.Println("Syncing ...")
 
 	svc := ec2.New(session.New(), &aws.Config{})
 	validateRegion(svc)

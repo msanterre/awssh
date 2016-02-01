@@ -38,10 +38,10 @@ type Command struct {
 var commands = []*Command{
 	cmdSync,
 	cmdList,
-  cmdAdd,
-  cmdRemove,
-  cmdClear,
-  cmdConnect,
+	cmdAdd,
+	cmdRemove,
+	cmdClear,
+	cmdConnect,
 }
 
 func main() {

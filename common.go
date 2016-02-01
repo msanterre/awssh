@@ -1,15 +1,15 @@
 package main
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"os"
-  "path"
-  "io/ioutil"
-  "encoding/json"
+	"path"
 )
 
 const (
-  DefaultUser = "ubuntu"
-  StorageDest = "$HOME/.awssh/machines"
+	DefaultUser = "ubuntu"
+	StorageDest = "$HOME/.awssh/machines"
 )
 
 type Machine struct {
@@ -23,12 +23,12 @@ func getMachine(filePath string) *Machine {
 	machine := &Machine{}
 	json.Unmarshal(fileContent, &machine)
 
-  return machine
+	return machine
 }
 
 func machineFile(name string) string {
 	machinesDir := os.ExpandEnv(StorageDest)
-  return path.Join(machinesDir, name)
+	return path.Join(machinesDir, name)
 }
 
 func fileExists(path string) (bool, error) {
