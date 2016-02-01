@@ -1,8 +1,18 @@
 # Installation Instructions
 
-## Building the awssh binary from source
-
 **Assumption:  You have Golang installed and your GOPATH is properly set as per the instructions in [Getting Started.](https://golang.org/doc/install) as well as have all of the common version control systems installed(git, mercurial, subversion, and bzr)**
+
+## Using `go get` to fetch the binary
+
+Open up your shell and do the following
+
+```
+go get github.com/msanterre/awssh
+```
+
+This will place the binary in your $GOPATH/bin directory.
+
+## Building the awssh binary from source
 
 Open up your shell and do the following
 
