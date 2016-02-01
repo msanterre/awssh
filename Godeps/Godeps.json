@@ -1,0 +1,46 @@
+{
+	"ImportPath": "github.com/msanterre/awssh",
+	"GoVersion": "go1.5.2",
+	"Deps": [
+		{
+			"ImportPath": "github.com/aws/aws-sdk-go/aws",
+			"Comment": "v1.1.0-5-g2a34ea8",
+			"Rev": "2a34ea8812f32aae75b43400f9424a0559840659"
+		},
+		{
+			"ImportPath": "github.com/aws/aws-sdk-go/private/endpoints",
+			"Comment": "v1.1.0-5-g2a34ea8",
+			"Rev": "2a34ea8812f32aae75b43400f9424a0559840659"
+		},
+		{
+			"ImportPath": "github.com/aws/aws-sdk-go/private/protocol",
+			"Comment": "v1.1.0-5-g2a34ea8",
+			"Rev": "2a34ea8812f32aae75b43400f9424a0559840659"
+		},
+		{
+			"ImportPath": "github.com/aws/aws-sdk-go/private/signer/v4",
+			"Comment": "v1.1.0-5-g2a34ea8",
+			"Rev": "2a34ea8812f32aae75b43400f9424a0559840659"
+		},
+		{
+			"ImportPath": "github.com/aws/aws-sdk-go/private/waiter",
+			"Comment": "v1.1.0-5-g2a34ea8",
+			"Rev": "2a34ea8812f32aae75b43400f9424a0559840659"
+		},
+		{
+			"ImportPath": "github.com/aws/aws-sdk-go/service/ec2",
+			"Comment": "v1.1.0-5-g2a34ea8",
+			"Rev": "2a34ea8812f32aae75b43400f9424a0559840659"
+		},
+		{
+			"ImportPath": "github.com/go-ini/ini",
+			"Comment": "v0-66-ga4e5487",
+			"Rev": "a4e5487f4a695680ed4a5444b9a094df8eaf48cb"
+		},
+		{
+			"ImportPath": "github.com/jmespath/go-jmespath",
+			"Comment": "0.2.2-2-gc01cf91",
+			"Rev": "c01cf91b011868172fdcd9f41838e80c9d716264"
+		}
+	]
+}
