@@ -15,12 +15,14 @@ import (
 
 var cmdSync = &Command{
 	Usage: "sync",
-	Short: "syncs your ec2 machines with awssh",
+	Short: "Syncs your ec2 instances with awssh",
 	Run:   runSync,
 }
 
 func runSync(cmd *Command, args []string) {
 	createStorageIfNotExists()
+
+  fmt.Println("Syncing ...")
 
 	svc := ec2.New(session.New(), &aws.Config{})
 	validateRegion(svc)
@@ -40,7 +42,6 @@ func runSync(cmd *Command, args []string) {
 				name := instanceName(instance)
 				user := instanceUser(instance)
 
-				fmt.Println(address, name, user)
 				machine = &Machine{
 					Address: address,
 					Name:    name,
@@ -100,7 +101,7 @@ func instanceUser(instance *ec2.Instance) string {
 }
 
 func (machine *Machine) Save() {
-	fmt.Println("Saving: ", machine.Name)
+	fmt.Println("Saving:", machine.Name)
 	filePath := path.Join(os.ExpandEnv(StorageDest), machine.Name)
 	machineJson, err := json.Marshal(machine)
 	if err == nil {

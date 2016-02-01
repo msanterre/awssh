@@ -1,21 +1,28 @@
 package main
 
 import (
-  os
+  "os"
+  "fmt"
 )
 
 var cmdRemove = &Command{
 	Usage: "remove",
-	Short: "remove a machine",
+	Short: "Remove an instance",
 	Run:   runRemove,
-}
-
-func machineFile(name string) bool {
-	machinesDir := os.ExpandEnv(StorageDest)
-  filePath := path.Join(
 }
 
 func runRemove(cmd *Command, args []string) {
 	createStorageIfNotExists()
+
+  for _, machine := range args {
+    machinePath := machineFile(machine)
+    err := os.Remove(machinePath)
+
+    if err == nil {
+      fmt.Println("Removed instance:", machine)
+    } else {
+      fmt.Println("No instance found for:", machine)
+    }
+  }
 
 }

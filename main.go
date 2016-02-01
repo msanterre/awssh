@@ -38,6 +38,10 @@ type Command struct {
 var commands = []*Command{
 	cmdSync,
 	cmdList,
+  cmdAdd,
+  cmdRemove,
+  cmdClear,
+  cmdConnect,
 }
 
 func main() {
@@ -104,17 +108,16 @@ func tmpl(w io.Writer, text string, data interface{}) {
 }
 
 var usageTemplate = `
-Awssh for managing your ec2 host connections
+Awssh is a small tool for easily managing and using your ec2 host connections
 
 Usage:
 
-	awssh command [arguments]
+    awssh command [arguments]
 
 The commands are:
 {{range .}}
     {{.Name | printf "%-8s"}} {{.Short}}{{end}}
 
-Use "awssh help [command]" for more information about a command.
 `
 
 var helpTemplate = `

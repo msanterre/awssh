@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -10,7 +9,7 @@ import (
 
 var cmdList = &Command{
 	Usage: "list",
-	Short: "list the saves machines",
+	Short: "List the saves instances",
 	Run:   runList,
 }
 
@@ -19,16 +18,6 @@ func getFiles() []os.FileInfo {
 	fileInfos, _ := ioutil.ReadDir(machinesDir)
 
 	return fileInfos
-}
-
-func getMachine(fileInfo os.FileInfo) *Machine {
-  machinesDir := os.ExpandEnv(StorageDest)
-	filePath := path.Join(machinesDir, fileInfo.Name())
-	fileContent, _ := ioutil.ReadFile(filePath)
-	machine := &Machine{}
-	json.Unmarshal(fileContent, &machine)
-
-  return machine
 }
 
 func writeHeaders() {
@@ -44,8 +33,14 @@ func runList(cmd *Command, args []string) {
 	createStorageIfNotExists()
 	fileInfos := getFiles()
 
-	for _, fileInfo := range fileInfos {
-		machine := getMachine(fileInfo)
-		writeMachine(machine)
-	}
+  if len(fileInfos) > 0 {
+    for _, fileInfo := range fileInfos {
+      machinesDir := os.ExpandEnv(StorageDest)
+      filePath := path.Join(machinesDir, fileInfo.Name())
+      machine := getMachine(filePath)
+      writeMachine(machine)
+    }
+  } else {
+    fmt.Println("You don't have any instances yet!")
+  }
 }

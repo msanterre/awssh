@@ -2,6 +2,9 @@ package main
 
 import (
 	"os"
+  "path"
+  "io/ioutil"
+  "encoding/json"
 )
 
 const (
@@ -13,6 +16,19 @@ type Machine struct {
 	Name    string `json:"name"`
 	User    string `json:"user"`
 	Address string `json:"host"`
+}
+
+func getMachine(filePath string) *Machine {
+	fileContent, _ := ioutil.ReadFile(filePath)
+	machine := &Machine{}
+	json.Unmarshal(fileContent, &machine)
+
+  return machine
+}
+
+func machineFile(name string) string {
+	machinesDir := os.ExpandEnv(StorageDest)
+  return path.Join(machinesDir, name)
 }
 
 func fileExists(path string) (bool, error) {
