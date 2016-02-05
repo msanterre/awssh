@@ -28,6 +28,9 @@ type Command struct {
 	// The first word in the line is taken to be the command name.
 	Usage string
 
+  // Short name is a shorthand for the long name
+  Shortname string
+
 	// Short is the short description shown in the 'awssh help' output.
 	Short string
 
@@ -60,7 +63,7 @@ func main() {
 	}
 
 	for _, cmd := range commands {
-		if cmd.Name() == args[0] {
+		if cmd.Name() == args[0] || cmd.Shortname == args[0] {
 			cmd.Flag.Usage = func() { cmd.UsageExit() }
 			cmd.Flag.Parse(args[1:])
 			cmd.Run(cmd, cmd.Flag.Args())

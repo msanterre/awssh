@@ -8,9 +8,10 @@ import (
 )
 
 var cmdClear = &Command{
-	Usage: "clear",
-	Short: "Clear all instances",
-	Run:   runClear,
+	Usage:     "clear",
+	Short:     "Clear all instances",
+	Run:       runClear,
+	Shortname: "cl",
 }
 
 func runClear(cmd *Command, args []string) {

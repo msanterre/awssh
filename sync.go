@@ -14,9 +14,10 @@ import (
 )
 
 var cmdSync = &Command{
-	Usage: "sync",
-	Short: "Syncs your ec2 instances with awssh",
-	Run:   runSync,
+	Usage:     "sync",
+	Short:     "Syncs your ec2 instances with awssh",
+	Run:       runSync,
+	Shortname: "s",
 }
 
 func runSync(cmd *Command, args []string) {

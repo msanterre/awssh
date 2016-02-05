@@ -8,9 +8,10 @@ import (
 )
 
 var cmdAdd = &Command{
-	Usage: "add",
-	Short: "Add a new instance",
-	Run:   runAdd,
+	Usage:     "add",
+	Short:     "Add a new instance",
+	Run:       runAdd,
+	Shortname: "a",
 }
 
 func runAdd(cmd *Command, args []string) {
