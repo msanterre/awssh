@@ -28,8 +28,8 @@ type Command struct {
 	// The first word in the line is taken to be the command name.
 	Usage string
 
-  // Short name is a shorthand for the long name
-  Shortname string
+	// Short name is a shorthand for the long name
+	Shortname string
 
 	// Short is the short description shown in the 'awssh help' output.
 	Short string
