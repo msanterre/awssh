@@ -39,4 +39,3 @@ Connecting to: ubuntu@ec2-51-186-242-255.us-west-2.compute.amazonaws.com
 ```
 
 And you should now be connecting to your machine! 🎉
-```
