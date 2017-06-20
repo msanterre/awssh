@@ -12,7 +12,7 @@ go get github.com/msanterre/awssh
 
 ## Configuration
 
-This tool uses the basic AWS API key configs: 
+This tool uses the basic AWS API environment variables for authentication:
 - AWS_ACCESS_KEY_ID
 - AWS_SECRET_ACCESS_KEY
 - AWS_REGION
