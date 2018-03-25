@@ -1,8 +1,7 @@
 # awssh
 
 ## Purpose
-
-If your AWS EC2 instances change frequently and you name them appropriately, awssh is a good way to make the pain of figuring out how to SSH into those new instances easier. 
+*awssh* is a tool that provides simple command line calls to ssh into AWS EC2 instances; it finds out the name and address of the machines and uses that information to ssh into the machines with a short and straightforward command.
 
 ## Installation
 
@@ -27,7 +26,7 @@ Syncing ...
 Saving: test-1
 ```
 
-*awssh* makes some assumptions on the type of instance you start, so the default name of your instance will be `ubuntu`, which is the default login for ubuntu type machines. (Support for other types will be added upon request)
+*awssh* makes some assumptions on the type of instance you start. The default name of your instance will be `ubuntu`, which is the default login for ubuntu type machines. (Support for other types will be added upon request)
 
 Now to connect to your instance:
 ```
