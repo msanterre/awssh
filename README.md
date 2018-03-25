@@ -1,7 +1,7 @@
 # awssh
 
 ## Purpose
-*awssh* is a tool that provides simple command line calls to ssh into AWS EC2 instances; it finds out the name and address of the machines and uses that information to ssh into the machines with a short and straightforward command.
+*awssh* is a tool that provides simple command line calls to ssh into AWS EC2 instances. It finds out the name and address of the machines and uses that information to ssh into the machines with a short and straightforward command.
 
 ## Installation
 
